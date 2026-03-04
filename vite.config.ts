@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/mabinogi-misc/',
+  base: process.env.NODE_ENV === 'production' ? '/mabinogi-misc/' : '/',
   plugins: [
     react({
       babel: {
