@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import NavBar from '@web/component/Navbar';
-import NotFound from '@web/pages/NotFound';
+import ErrorPage from '@web/pages/ErrorPage';
 import Contact from '@web/pages/contact/Contact';
 import Calculator from '@web/pages/calculator/Calculator';
 
@@ -15,7 +15,7 @@ const App: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/calculator" element={<Calculator />} />
 
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
     </div>
