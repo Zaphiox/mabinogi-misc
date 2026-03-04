@@ -6,7 +6,7 @@ import './styles/reset.scss';
 import App from './App.tsx';
 import { isProduction } from '@web/utils/miscUtils.ts';
 
-const basePath = isProduction ? '/mabinogi-misc' : '/';
+const basePath = isProduction ? '/mabinogi-misc/' : '/';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
