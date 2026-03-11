@@ -1,8 +1,9 @@
-import { switchConst } from './calConst';
+import { switchConst, type Option } from './calConst';
 
 const extractFormData = (formData: any[] | FormData) => {
   const data: any = {};
   for (const [name, value] of formData.entries()) {
+    if (name === 'profileSelector') continue;
     if (typeof value === 'string') {
       data[name] = !isNaN(Number(value)) && value.trim() !== '' ? Number(value) : value;
     } else {
@@ -85,4 +86,12 @@ const calculateResult = (data): PerformanceScores => {
     playInspiring: playInspiring,
   };
 };
-export { extractFormData, calculateResult };
+
+const readProfileSwitch = (val: string): boolean => val === 'on';
+
+const getSelectedValue = (selectedValue: number, options: Option[]) => {
+  const index = options.findIndex((val) => typeof val.value === 'number' && val.value === selectedValue);
+  return index === -1 ? 0 : index;
+};
+
+export { extractFormData, calculateResult, readProfileSwitch, getSelectedValue };

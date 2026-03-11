@@ -414,4 +414,18 @@ export const switchConst = {
   isecho: 0,
 };
 
+export interface savedProfile {
+  label: string;
+  value: string;
+}
+
+export const updateProfileList = (savedProfile: savedProfile[], profiles: any) => {
+  for (const key in profiles) {
+    savedProfile.push({
+      label: key,
+      value: key,
+    });
+  }
+  return savedProfile;
+};
 export default exportObj;

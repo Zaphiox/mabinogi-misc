@@ -7,9 +7,17 @@ const BasicSelect = (props: {
   id: any;
   defaultSelect?: number;
   isOptionDisabled?: ((opt) => boolean) | undefined;
-  onChange?: ((opt) => void) | undefined;
+  onChange?: ((value: any, action: any) => void) | undefined;
+  placeholder?: string;
 }) => {
-  const { options, id, defaultSelect = 0, isOptionDisabled = () => false, onChange = () => {} } = props;
+  const {
+    options,
+    id,
+    defaultSelect = 0,
+    isOptionDisabled = () => false,
+    onChange = () => {},
+    placeholder = 'Select...',
+  } = props;
   return (
     <Select
       id={id}
@@ -27,6 +35,7 @@ const BasicSelect = (props: {
       onChange={onChange}
       isOptionDisabled={isOptionDisabled}
       menuPlacement={'auto'}
+      placeholder={placeholder}
     />
   );
 };

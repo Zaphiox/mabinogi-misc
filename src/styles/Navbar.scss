@@ -1,9 +1,9 @@
 /* --- Base Sidebar --- */
 .sidebar {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 100%;
   width: 240px;
   background-color: #1c1c1e;
   color: #fff;
