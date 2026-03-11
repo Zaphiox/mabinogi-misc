@@ -3,7 +3,7 @@ import BasicSelect from '@web/component/BasicSelect';
 import BasicControl from '@web/component/BasicControl';
 
 import calConst, { updateProfileList, type savedProfile } from './calConst';
-import { calculateResult, extractFormData, getSelectedValue, readProfileSwitch } from './cal';
+import { calculateResult, extractFormData, getSelectedStringValue, getSelectedValue, readProfileSwitch } from './cal';
 
 import '@web/styles/Calculator.scss';
 import { Button, RadioGroup, TextField } from '@mui/material';
@@ -201,29 +201,105 @@ const Calculator = () => {
               <div className="group-split"></div>
               <div className="group">
                 <span className="group-legend">飾品 1</span>
-                <BasicSelect id="accessory1Prefix" options={calConst.accessoryPrefixOptions} defaultSelect={1} />
-                <BasicSelect id="accessory1Suffix" options={calConst.accessorySuffixOptions} defaultSelect={1} />
+                <BasicSelect
+                  id="accessory1Prefix"
+                  options={calConst.accessoryPrefixOptions}
+                  defaultSelect={
+                    current ? getSelectedValue(current?.accessory1Prefix, calConst.accessoryPrefixOptions) : 1
+                  }
+                />
+                <BasicSelect
+                  id="accessory1Suffix"
+                  options={calConst.accessorySuffixOptions}
+                  defaultSelect={
+                    current ? getSelectedValue(current?.accessory1Suffix, calConst.accessorySuffixOptions) : 1
+                  }
+                />
                 <div className="sub-group col-3">
-                  <BasicSelect id="accessory1ReforgingNormal" options={calConst.accessoryReforgeNormalOptions} />
-                  <BasicSelect id="accessory1ReforgingExcellent" options={calConst.accessoryReforgeExcellentOptions} />
+                  <BasicSelect
+                    id="accessory1ReforgingNormal"
+                    options={calConst.accessoryReforgeNormalOptions}
+                    defaultSelect={
+                      current
+                        ? getSelectedValue(current?.accessory1ReforgingNormal, calConst.accessoryReforgeNormalOptions)
+                        : 0
+                    }
+                  />
+                  <BasicSelect
+                    id="accessory1ReforgingExcellent"
+                    options={calConst.accessoryReforgeExcellentOptions}
+                    defaultSelect={
+                      current
+                        ? getSelectedValue(
+                            current?.accessory1ReforgingExcellent,
+                            calConst.accessoryReforgeExcellentOptions,
+                          )
+                        : 0
+                    }
+                  />
                   <BasicSelect
                     id="accessory1ReforgingInspiring"
                     options={calConst.accessoryReforgeInspiringOptions}
-                    defaultSelect={2}
+                    defaultSelect={
+                      current
+                        ? getSelectedValue(
+                            current?.accessory1ReforgingInspiring,
+                            calConst.accessoryReforgeInspiringOptions,
+                          )
+                        : 2
+                    }
                   />
                 </div>
               </div>
               <div className="group">
                 <span className="group-legend">飾品 2</span>
-                <BasicSelect id="accessory2Prefix" options={calConst.accessoryPrefixOptions} defaultSelect={1} />
-                <BasicSelect id="accessory2Suffix" options={calConst.accessorySuffixOptions} defaultSelect={1} />
+                <BasicSelect
+                  id="accessory2Prefix"
+                  options={calConst.accessoryPrefixOptions}
+                  defaultSelect={
+                    current ? getSelectedValue(current?.accessory2Prefix, calConst.accessoryPrefixOptions) : 1
+                  }
+                />
+                <BasicSelect
+                  id="accessory2Suffix"
+                  options={calConst.accessorySuffixOptions}
+                  defaultSelect={
+                    current ? getSelectedValue(current?.accessory2Suffix, calConst.accessorySuffixOptions) : 1
+                  }
+                />
                 <div className="sub-group col-3">
-                  <BasicSelect id="accessory2ReforgingNormal" options={calConst.accessoryReforgeNormalOptions} />
-                  <BasicSelect id="accessory2ReforgingExcellent" options={calConst.accessoryReforgeExcellentOptions} />
+                  <BasicSelect
+                    id="accessory2ReforgingNormal"
+                    options={calConst.accessoryReforgeNormalOptions}
+                    defaultSelect={
+                      current
+                        ? getSelectedValue(current?.accessory2ReforgingNormal, calConst.accessoryReforgeNormalOptions)
+                        : 0
+                    }
+                  />
+                  <BasicSelect
+                    id="accessory2ReforgingExcellent"
+                    options={calConst.accessoryReforgeExcellentOptions}
+                    defaultSelect={
+                      current
+                        ? getSelectedValue(
+                            current?.accessory2ReforgingExcellent,
+                            calConst.accessoryReforgeExcellentOptions,
+                          )
+                        : 0
+                    }
+                  />
                   <BasicSelect
                     id="accessory2ReforgingInspiring"
                     options={calConst.accessoryReforgeInspiringOptions}
-                    defaultSelect={2}
+                    defaultSelect={
+                      current
+                        ? getSelectedValue(
+                            current?.accessory2ReforgingInspiring,
+                            calConst.accessoryReforgeInspiringOptions,
+                          )
+                        : 2
+                    }
                   />
                 </div>
               </div>
@@ -359,7 +435,9 @@ const Calculator = () => {
                 <BasicSelect
                   id="fairyDragon"
                   options={calConst.fairyDragonOptions}
-                  defaultSelect={current ? getSelectedValue(current?.fairyDragon, calConst.fairyDragonOptions) : 0}
+                  defaultSelect={
+                    current ? getSelectedStringValue(current?.fairyDragon, calConst.fairyDragonOptions) : 0
+                  }
                 />
                 <BasicSelect
                   id="specialUpgrade"

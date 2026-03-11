@@ -94,4 +94,9 @@ const getSelectedValue = (selectedValue: number, options: Option[]) => {
   return index === -1 ? 0 : index;
 };
 
-export { extractFormData, calculateResult, readProfileSwitch, getSelectedValue };
+const getSelectedStringValue = (selectedValue: string, options: Option[]) => {
+  const index = options.findIndex((val) => typeof val.value === 'string' && val.value === selectedValue);
+  return index === -1 ? 0 : index;
+};
+
+export { extractFormData, calculateResult, readProfileSwitch, getSelectedValue, getSelectedStringValue };
