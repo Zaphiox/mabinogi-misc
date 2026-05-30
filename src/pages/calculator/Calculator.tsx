@@ -6,7 +6,7 @@ import calConst, { updateProfileList, type savedProfile } from './calConst';
 import { calculateResult, extractFormData, getSelectedStringValue, getSelectedValue, readProfileSwitch } from './cal';
 
 import '@web/styles/Calculator.scss';
-import { Button, RadioGroup, TextField } from '@mui/material';
+import { Button, RadioGroup, TextField, InputAdornment } from '@mui/material';
 import { useLocalStorage } from '@web/utils/customHook';
 import { isEmptyOrSpaces } from '@web/utils/miscUtils';
 
@@ -458,6 +458,26 @@ const Calculator = () => {
               <div className="group-split"></div>
               <div className="group">
                 <div className="group-legend">雜項</div>
+                <TextField
+                  id="totem"
+                  name="totem"
+                  label="布里萊赫硬幣"
+                  variant="standard"
+                  type="number"
+                  slotProps={{
+                    htmlInput: {
+                      min: 0,
+                      max: 1,
+                      step: '0.01',
+                      inputmode: 'decimal',
+                      pattern: '[0-9]',
+                    },
+                    input: {
+                      endAdornment: <InputAdornment position="start">%</InputAdornment>,
+                    },
+                  }}
+                  defaultValue={current ? current?.totem : 0}
+                />
                 <BasicControl
                   id="astro"
                   label="戀人卡"

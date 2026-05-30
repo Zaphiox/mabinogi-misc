@@ -67,11 +67,14 @@ const calculateResult = (data): PerformanceScores => {
   const excellentPlay = excellentSing + data.reforgingExcellent;
   const inspiringPlay = inspiringSing + data.reforgingInspiring;
 
+  const totem = Number(data.totem) / 100;
+
   const rating = data.instrument === 25 || data.instrument === 22 ? 0.07 : 0;
-  const extra = 1 + rating + data.specialUpgrade;
-  const singNomral = baseSing * normalSing + fairyDragonBuff;
-  const singExcellent = baseSing * excellentSing + fairyDragonBuff;
-  const singInspiring = baseSing * inspiringSing + fairyDragonBuff;
+  const extra = +(1 + rating + data.specialUpgrade + totem).toFixed(6);
+
+  const singNomral = (baseSing * normalSing + fairyDragonBuff) * 1 + totem;
+  const singExcellent = (baseSing * excellentSing + fairyDragonBuff) * 1 + totem;
+  const singInspiring = (baseSing * inspiringSing + fairyDragonBuff) * 1 + totem;
 
   const playNomral = (basePlay * normalPlay + fairyDragonBuff) * extra;
   const playExcellent = (basePlay * excellentPlay + fairyDragonBuff) * extra;

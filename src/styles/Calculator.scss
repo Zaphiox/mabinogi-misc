@@ -85,6 +85,9 @@
     .MuiFormControlLabel-label {
       font-weight: bold;
     }
+    .MuiInputLabel-standard {
+      color: #2e6e9e;
+    }
 
     .result-panel {
       display: grid;
@@ -154,4 +157,14 @@
       }
     }
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
 }
