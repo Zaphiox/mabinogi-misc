@@ -72,6 +72,8 @@ const instrumentBaseOptions: Option[] = [
 
 const instrumentPrefixOptions: Option[] = [
   { value: 0, label: '樂器接頭：無相關賦予' },
+  { value: 9, label: '樂器接頭：複調 (+9)(改版用)' },
+  { value: 8, label: '樂器接頭：複調 (+8)(改版用)' },
   { value: 7, label: '樂器接頭：複調 (+7)' },
   { value: 6, label: '樂器接頭：複調 (+6)' },
   { id: 'Polyphony5', value: 5, label: '樂器接頭：複調 (+5)' },
@@ -84,6 +86,8 @@ const instrumentPrefixOptions: Option[] = [
 
 const instrumentSuffixOptions: Option[] = [
   { value: 0, label: '樂器接尾：無相關賦予' },
+  { value: 5, label: '樂器接尾：節拍 (+5)' },
+  { value: 4, label: '樂器接尾：節拍 (+4)' },
   { value: 3, label: '樂器接尾：節拍 (+3)' },
   { value: 2, label: '樂器接尾：節拍 (+2)' },
   { value: 1, label: '樂器接尾：和音 (+1)' },
