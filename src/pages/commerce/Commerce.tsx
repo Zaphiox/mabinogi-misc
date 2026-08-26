@@ -2,8 +2,7 @@ import '@web/styles/Commerce.scss';
 import csvFile from '@web/assets/data/data.csv?raw';
 
 import Papa from 'papaparse';
-import React, { useEffect, Dispatch, SetStateAction } from 'react';
-import { useLocalStorage } from '@web/utils/customHook';
+import React, { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 
 /**
  * Checkbox change handler
@@ -11,7 +10,7 @@ import { useLocalStorage } from '@web/utils/customHook';
 function checkboxHandling(
   e: React.ChangeEvent<HTMLInputElement>,
   _status: Record<string, boolean>,
-  setStatus: Dispatch<SetStateAction<Record<string, boolean>>>
+  setStatus: Dispatch<SetStateAction<Record<string, boolean>>>,
 ) {
   const indexAttr = e.target.getAttribute('index');
   const index = indexAttr !== null ? Number(indexAttr) : -1;
@@ -20,7 +19,7 @@ function checkboxHandling(
   });
 }
 
-const parseCSV = (param: (records: string[][]) => void) => {
+const parseCSV = (param) => {
   Papa.parse(csvFile, {
     // header: true,
     skipEmptyLines: true,
@@ -36,7 +35,6 @@ const getImage = (imageName: string | undefined) => {
   if (!imageName) return defaultUrl;
 
   try {
-    // Going up two levels to escape components/commerce/
     return new URL(`../../assets/images/commerce/${imageName}.png`, import.meta.url).href;
   } catch (err) {
     return defaultUrl;
@@ -132,26 +130,45 @@ const Table: React.FC<TableProps> = (props) => {
 };
 
 const resetStatus = (
-  e: React.MouseEvent<HTMLButtonElement>,
-  setStatus: Dispatch<SetStateAction<Record<string, boolean>>>
+  _e: React.MouseEvent<HTMLButtonElement>,
+  setStatus: Dispatch<SetStateAction<Record<string, boolean>>>,
 ) => {
   localStorage.removeItem('status');
   setStatus({});
 };
 
 const Commerce: React.FC = () => {
-  const [data, setData] = useLocalStorage('csvData', null) as [string[][] | null, Dispatch<SetStateAction<string[][] | null>>];
-  const [status, setStatus] = useLocalStorage('status', {}) as [Record<string, boolean>, Dispatch<SetStateAction<Record<string, boolean>>>];
+  const [data, setData] = useState<string[][] | null>(null);
+  const [status, setStatus] = useState<Record<string, boolean>>({});
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!data) {
+    const savedData = localStorage.getItem('csvData');
+    if (savedData !== null) {
+      setData(JSON.parse(savedData));
+    } else {
       parseCSV(setData);
     }
+
+    const savedStatus = localStorage.getItem('status');
+    if (savedStatus !== null) {
+      setStatus(JSON.parse(savedStatus));
+    } else {
+      setStatus({});
+    }
+    setIsLoaded(true);
+
     return () => {
       setData(null);
       setStatus({});
     };
   }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('status', JSON.stringify(status));
+    }
+  }, [status, isLoaded]);
 
   return (
     <div className="page-container">

@@ -1,5 +1,5 @@
 import React from 'react';
-import Select, { ActionMeta, SingleValue } from 'react-select';
+import Select, { type ActionMeta, type SingleValue } from 'react-select';
 
 type Option = { value: unknown; label: string; id?: string | number };
 
@@ -35,7 +35,7 @@ const BasicSelect: React.FC<BasicSelectProps> = (props) => {
       getOptionLabel={(opt) => opt.label}
       isOptionSelected={(option, selected) => {
         if (!selected) return false;
-        return getId(option as Option) === getId(selected as Option);
+        return getId(option as Option) === getId(selected as unknown as Option);
       }}
       onChange={onChange}
       isOptionDisabled={isOptionDisabled}

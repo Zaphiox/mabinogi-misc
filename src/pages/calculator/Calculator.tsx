@@ -13,7 +13,7 @@ import { isEmptyOrSpaces } from '@web/utils/miscUtils';
 const Calculator: React.FC = () => {
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isLira, setIsLira] = useState<boolean>(true);
-  const [result, setResult] = useState<unknown>(null);
+  const [result, setResult] = useState<any>(null);
   const [selectedProfile, setSelectedProfile] = useState<string>('');
   const [profiles, setProfiles] = useLocalStorage('calProfile', {});
   const [savedProfile, setSavedProfile] = useState<savedProfile[]>(profiles);
@@ -50,13 +50,13 @@ const Calculator: React.FC = () => {
     };
   }, [isSubmit]);
 
-  function onChangeInstrument(opt: { value: string | number } | null) {
-      if (!opt) return;
-      setIsLira(Number(opt.value) === 22 || Number(opt.value) === 25);
-    }
-    const isOptionDisabled = (option: { value: string | number }) => {
-      return !isLira && Number(option.value) === 0.055;
-    };
+  function onChangeInstrument(opt: { value: unknown } | null) {
+    if (!opt) return;
+    setIsLira(Number(opt.value) === 22 || Number(opt.value) === 25);
+  }
+  const isOptionDisabled = (option: { value: unknown }) => {
+    return !isLira && Number(option.value) === 0.055;
+  };
 
   function calculate(event: React.BaseSyntheticEvent) {
     event.preventDefault();
@@ -470,7 +470,7 @@ const Calculator: React.FC = () => {
                       min: 0,
                       max: 1,
                       step: '0.01',
-                      inputmode: 'decimal',
+                      inputMode: 'decimal',
                       pattern: '[0-9]',
                     },
                     input: {
