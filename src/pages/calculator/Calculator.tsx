@@ -10,10 +10,10 @@ import { Button, RadioGroup, TextField, InputAdornment } from '@mui/material';
 import { useLocalStorage } from '@web/utils/customHook';
 import { isEmptyOrSpaces } from '@web/utils/miscUtils';
 
-const Calculator = () => {
+const Calculator: React.FC = () => {
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isLira, setIsLira] = useState<boolean>(true);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
   const [selectedProfile, setSelectedProfile] = useState<string>('');
   const [profiles, setProfiles] = useLocalStorage('calProfile', {});
   const [savedProfile, setSavedProfile] = useState<savedProfile[]>(profiles);
@@ -50,12 +50,13 @@ const Calculator = () => {
     };
   }, [isSubmit]);
 
-  function onChangeInstrument(opt) {
-    setIsLira(Number(opt.value) === 22 || Number(opt.value) === 25);
-  }
-  const isOptionDisabled = (option) => {
-    return !isLira && Number(option.value) === 0.055;
-  };
+  function onChangeInstrument(opt: { value: string | number } | null) {
+      if (!opt) return;
+      setIsLira(Number(opt.value) === 22 || Number(opt.value) === 25);
+    }
+    const isOptionDisabled = (option: { value: string | number }) => {
+      return !isLira && Number(option.value) === 0.055;
+    };
 
   function calculate(event: React.BaseSyntheticEvent) {
     event.preventDefault();

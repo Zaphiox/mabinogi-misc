@@ -2,30 +2,31 @@ import '@web/styles/Commerce.scss';
 import csvFile from '@web/assets/data/data.csv?raw';
 
 import Papa from 'papaparse';
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, Dispatch, SetStateAction } from 'react';
+import { useLocalStorage } from '@web/utils/customHook';
 
 /**
- *
- * @param {React.ChangeEvent<HTMLInputElement>} e
+ * Checkbox change handler
  */
-function checkboxHandling(e, _status, setStatus) {
-  const index = e.target.getAttribute('index');
+function checkboxHandling(
+  e: React.ChangeEvent<HTMLInputElement>,
+  _status: Record<string, boolean>,
+  setStatus: Dispatch<SetStateAction<Record<string, boolean>>>
+) {
+  const indexAttr = e.target.getAttribute('index');
+  const index = indexAttr !== null ? Number(indexAttr) : -1;
   setStatus((prevStatus) => {
     return { ...prevStatus, [index]: e.target.checked };
   });
 }
 
-const parseCSV = (param) => {
+const parseCSV = (param: (records: string[][]) => void) => {
   Papa.parse(csvFile, {
     // header: true,
     skipEmptyLines: true,
-    complete: function (input) {
-      const records = input.data;
+    complete: function (input: Papa.ParseResult<string[]>) {
+      const records = input.data as string[][];
       param(records);
-      if (localStorage.getItem('csvData') === null) {
-        localStorage.setItem('csvData', JSON.stringify(records));
-      }
     },
   });
 };
@@ -44,7 +45,14 @@ const getImage = (imageName: string | undefined) => {
 
 const splitterLine = [15, 29, 43];
 
-const Table = (props) => {
+interface TableProps {
+  data: string[][] | null;
+  status: Record<string | number, boolean>;
+  setStatus: Dispatch<SetStateAction<Record<string | number, boolean>>>;
+  setData?: Dispatch<SetStateAction<string[][] | null>>;
+}
+
+const Table: React.FC<TableProps> = (props) => {
   const { data, status, setStatus } = props;
   return (
     <>
@@ -123,34 +131,27 @@ const Table = (props) => {
   );
 };
 
-const resetStatus = (e: React.MouseEvent<HTMLButtonElement>, setStatus) => {
+const resetStatus = (
+  e: React.MouseEvent<HTMLButtonElement>,
+  setStatus: Dispatch<SetStateAction<Record<string, boolean>>>
+) => {
   localStorage.removeItem('status');
   setStatus({});
 };
 
-const Commerce = () => {
-  const [data, setData] = useState(null);
-  const [status, setStatus] = useState({});
+const Commerce: React.FC = () => {
+  const [data, setData] = useLocalStorage('csvData', null) as [string[][] | null, Dispatch<SetStateAction<string[][] | null>>];
+  const [status, setStatus] = useLocalStorage('status', {}) as [Record<string, boolean>, Dispatch<SetStateAction<Record<string, boolean>>>];
+
   useEffect(() => {
-    if (localStorage.getItem('csvData') !== null) {
-      const data = JSON.parse(localStorage.getItem('csvData') ?? '');
-      setData(data);
-    } else {
+    if (!data) {
       parseCSV(setData);
-    }
-    if (localStorage.getItem('status') !== null) {
-      setStatus(JSON.parse(localStorage.getItem('status') ?? ''));
     }
     return () => {
       setData(null);
       setStatus({});
     };
   }, []);
-  useEffect(() => {
-    localStorage.setItem('status', JSON.stringify(status));
-
-    return () => {};
-  }, [status]);
 
   return (
     <div className="page-container">
