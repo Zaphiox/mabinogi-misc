@@ -1,15 +1,20 @@
-import Select from 'react-select';
+import React from 'react';
+import Select, { ActionMeta, SingleValue } from 'react-select';
 
-const getId = (opt) => opt && (opt.id ?? String(opt.value));
+type Option = { value: unknown; label: string; id?: string | number };
 
-const BasicSelect = (props: {
-  options: any;
-  id: any;
+const getId = (opt?: Option | null) => opt && (opt.id ?? String(opt.value));
+
+interface BasicSelectProps {
+  options: Option[];
+  id: string;
   defaultSelect?: number;
-  isOptionDisabled?: ((opt) => boolean) | undefined;
-  onChange?: ((value: any, action: any) => void) | undefined;
+  isOptionDisabled?: (opt: Option) => boolean;
+  onChange?: (value: SingleValue<Option>, action: ActionMeta<Option>) => void;
   placeholder?: string;
-}) => {
+}
+
+const BasicSelect: React.FC<BasicSelectProps> = (props) => {
   const {
     options,
     id,
@@ -30,7 +35,7 @@ const BasicSelect = (props: {
       getOptionLabel={(opt) => opt.label}
       isOptionSelected={(option, selected) => {
         if (!selected) return false;
-        return getId(option) === getId(selected);
+        return getId(option as Option) === getId(selected as Option);
       }}
       onChange={onChange}
       isOptionDisabled={isOptionDisabled}
