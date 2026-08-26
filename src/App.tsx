@@ -4,6 +4,7 @@ import NavBar from '@web/component/Navbar';
 import ErrorPage from '@web/pages/ErrorPage';
 import Contact from '@web/pages/contact/Contact';
 import Calculator from '@web/pages/calculator/Calculator';
+import Commerce from './pages/commerce/Commerce';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Navigate to="/calculator" replace />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/calculator" element={<Calculator />} />
+          <Route path="/commerce" element={<Commerce />} />
 
           <Route path="*" element={<ErrorPage />} />
         </Routes>

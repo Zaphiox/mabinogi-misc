@@ -10,6 +10,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { to: '/calculator', label: '戰場計算機', end: true },
+  { to: '/commerce', label: '貿易' },
   { to: '/contact', label: 'Contact' },
 ];
 
