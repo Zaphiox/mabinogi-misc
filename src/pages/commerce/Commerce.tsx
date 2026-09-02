@@ -2,7 +2,8 @@ import '@web/styles/Commerce.scss';
 import csvFile from '@web/assets/data/data.csv?raw';
 
 import Papa from 'papaparse';
-import React, { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import React, { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import Select from 'react-select';
 
 /**
  * Checkbox change handler
@@ -19,13 +20,14 @@ function checkboxHandling(
   });
 }
 
-const parseCSV = (param) => {
-  Papa.parse(csvFile, {
-    // header: true,
+type CommerceRecord = Record<string, string>;
+
+const parseCSV = (param: Dispatch<SetStateAction<CommerceRecord[] | null>>) => {
+  Papa.parse<Record<string, string>>(csvFile, {
+    header: true,
     skipEmptyLines: true,
-    complete: function (input: Papa.ParseResult<string[]>) {
-      const records = input.data as string[][];
-      param(records);
+    complete: function (input) {
+      param(input.data);
     },
   });
 };
@@ -44,24 +46,37 @@ const getImage = (imageName: string | undefined) => {
 const splitterLine = [15, 29, 43];
 
 interface TableProps {
-  data: string[][] | null;
+  data: CommerceRecord[] | null;
   status: Record<string | number, boolean>;
   setStatus: Dispatch<SetStateAction<Record<string | number, boolean>>>;
-  setData?: Dispatch<SetStateAction<string[][] | null>>;
+  monthlyItems: Map<string, string[]>;
+  selectedItems: Record<string, string>;
+  onMonthlyItemChange: (position: string, item: string) => void;
 }
 
 const Table: React.FC<TableProps> = (props) => {
-  const { data, status, setStatus } = props;
+  const { data, status, setStatus, monthlyItems, selectedItems, onMonthlyItemChange } = props;
+  const headers = data?.[0]
+    ? Object.keys(data[0]).filter((header) => header !== '每月更換')
+    : [];
   return (
     <>
       {data && data !== null ? (
-        data.map((row, rowIndex) => {
-          return (
-            <React.Fragment key={rowIndex}>
+        (() => {
+          let currentPosition = '';
+          return [null, ...data].map((row, rowIndex) => {
+            if (row?.位置) {
+              currentPosition = row.位置;
+            }
+            const values = row === null ? headers : headers.map((header) => row[header] ?? '');
+            const position = currentPosition;
+            const monthlyOptions = position ? monthlyItems.get(position) : undefined;
+            return (
+              <React.Fragment key={rowIndex}>
               <div
                 className={`table-cell table-checkbox${
                   splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
-                }${rowIndex === 0 ? ' table-corner--top-left' : ''}${rowIndex === data.length - 1 ? ' table-corner--bottom-left' : ''}`}
+                }${rowIndex === 0 ? ' table-corner--top-left' : ''}${rowIndex === data.length ? ' table-corner--bottom-left' : ''}`}
               >
                 {rowIndex !== 0 ? (
                   <>
@@ -80,48 +95,68 @@ const Table: React.FC<TableProps> = (props) => {
                   '確認欄'
                 )}
               </div>
-              {row &&
-                row.map((value, index) => {
-                  return (
-                    <React.Fragment key={`${value}+${rowIndex}+${index}`}>
+              {values.map((value, index) => {
+                return (
+                  <React.Fragment key={`${value}+${rowIndex}+${index}`}>
+                    <div
+                      className={`table-cell${
+                        values.length - 1 === index ? ' table-description' : ''
+                      }${rowIndex === 0 ? ' table-header' : ''}${
+                        splitterLine.includes(rowIndex - 1) ? ` table-splitter` : ``
+                      }${
+                        values.length - 1 === index && rowIndex === 0
+                          ? ' table-header-description table-corner--top-right'
+                          : ''
+                      }${rowIndex === data.length && index === values.length - 1 ? ' table-corner--bottom-right' : ''}`}
+                    >
+                      {index === 1 && row?.每月更換?.toUpperCase() === 'TRUE' && value ? (
+                        <Select
+                          aria-label={`${position} 每月更換`}
+                          className="commerce-select"
+                          classNamePrefix="commerce-react-select"
+                          options={monthlyOptions?.map((item) => ({ value: item, label: item })) ?? []}
+                          value={{
+                            value: selectedItems[position] ?? value,
+                            label: selectedItems[position] ?? value,
+                          }}
+                          onChange={(option) => {
+                            if (option) {
+                              onMonthlyItemChange(position, option.value);
+                            }
+                          }}
+                          isSearchable={false}
+                          menuPlacement="auto"
+                        />
+                      ) : (
+                        value || ' '
+                      )}
+                    </div>
+                    {index === 2 && (
                       <div
                         className={`table-cell${
-                          row.length - 1 === index ? ' table-description' : ''
-                        }${rowIndex === 0 ? ' table-header' : ''}${
-                          splitterLine.includes(rowIndex - 1) ? ` table-splitter` : ``
-                        }${
-                          row.length - 1 === index && rowIndex === 0
-                            ? ' table-header-description table-corner--top-right'
-                            : ''
-                        }${rowIndex === data.length - 1 && index === row.length - 1 ? ' table-corner--bottom-right' : ''}`}
+                          splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
+                        }${rowIndex === 0 ? ' table-header' : ''}`}
                       >
-                        {value ?? ' '}
+                        {rowIndex === 0 ? (
+                          '圖'
+                        ) : (
+                          <img
+                            alt={value}
+                            src={getImage(value)}
+                            onError={(e) => {
+                              e.currentTarget.src = getImage('default');
+                            }}
+                          />
+                        )}
                       </div>
-                      {index === 2 && (
-                        <div
-                          className={`table-cell${
-                            splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
-                          }${rowIndex === 0 ? ' table-header' : ''}`}
-                        >
-                          {rowIndex === 0 ? (
-                            '圖'
-                          ) : (
-                            <img
-                              alt={value}
-                              src={getImage(value)}
-                              onError={(e) => {
-                                e.currentTarget.src = getImage('default');
-                              }}
-                            />
-                          )}
-                        </div>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-            </React.Fragment>
-          );
-        })
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              </React.Fragment>
+            );
+          });
+        })()
       ) : (
         <></>
       )}
@@ -138,7 +173,8 @@ const resetStatus = (
 };
 
 const Commerce: React.FC = () => {
-  const [data, setData] = useState<string[][] | null>(null);
+  const [data, setData] = useState<CommerceRecord[] | null>(null);
+  const [selectedItems, setSelectedItems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Record<string, boolean>>({});
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -156,6 +192,10 @@ const Commerce: React.FC = () => {
     } else {
       setStatus({});
     }
+    const savedSelections = localStorage.getItem('commerceSelections');
+    if (savedSelections !== null) {
+      setSelectedItems(JSON.parse(savedSelections));
+    }
     setIsLoaded(true);
 
     return () => {
@@ -170,6 +210,61 @@ const Commerce: React.FC = () => {
     }
   }, [status, isLoaded]);
 
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('commerceSelections', JSON.stringify(selectedItems));
+    }
+  }, [selectedItems, isLoaded]);
+
+  const positionGroups = useMemo(() => {
+    const groups = new Map<
+      string,
+      { fixed: CommerceRecord[]; monthly: Map<string, CommerceRecord[]> }
+    >();
+    let position = '';
+    let item = '';
+
+    data?.forEach((record) => {
+      if (record.位置) {
+        position = record.位置;
+      }
+      if (record.貿易物品) {
+        item = record.貿易物品;
+      }
+      if (!position) {
+        return;
+      }
+
+      const group = groups.get(position) ?? {
+        fixed: [] as CommerceRecord[],
+        monthly: new Map<string, CommerceRecord[]>(),
+      };
+      if (record.每月更換?.toUpperCase() === 'TRUE') {
+        const monthlyItem = group.monthly.get(item) ?? [];
+        monthlyItem.push(record);
+        group.monthly.set(item, monthlyItem);
+      } else {
+        group.fixed.push(record);
+      }
+      groups.set(position, group);
+    });
+
+    return groups;
+  }, [data]);
+
+  const monthlyItems = new Map<string, string[]>(
+    [...positionGroups].map(([position, group]) => [position, [...group.monthly.keys()]]),
+  );
+  const visibleData = [...positionGroups].flatMap(([position, group]) => {
+    const items = [...group.monthly.keys()];
+    const selectedItem = items.includes(selectedItems[position]) ? selectedItems[position] : items[0];
+    return [...group.fixed, ...(selectedItem ? group.monthly.get(selectedItem) ?? [] : [])];
+  });
+  const handleMonthlyItemChange = (position: string, item: string) => {
+    setSelectedItems((previous) => ({ ...previous, [position]: item }));
+    setStatus({});
+  };
+
   return (
     <div className="page-container">
       <div className="commerce-reminder">
@@ -183,7 +278,21 @@ const Commerce: React.FC = () => {
       </div>
 
       <div className="table-container">
-        <Table data={data} status={status} setData={setData} setStatus={setStatus} />
+        <Table
+          data={visibleData.length > 0 ? visibleData : null}
+          status={status}
+          setStatus={setStatus}
+          monthlyItems={monthlyItems}
+          selectedItems={Object.fromEntries(
+            [...positionGroups].map(([position, group]) => [
+              position,
+              selectedItems[position] && group.monthly.has(selectedItems[position])
+                ? selectedItems[position]
+                : [...group.monthly.keys()][0] ?? '',
+            ]),
+          )}
+          onMonthlyItemChange={handleMonthlyItemChange}
+        />
       </div>
 
       <div className="util-copyrights">
