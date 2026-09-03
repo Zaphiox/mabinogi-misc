@@ -56,9 +56,7 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = (props) => {
   const { data, status, setStatus, monthlyItems, selectedItems, onMonthlyItemChange } = props;
-  const headers = data?.[0]
-    ? Object.keys(data[0]).filter((header) => header !== '每月更換')
-    : [];
+  const headers = data?.[0] ? Object.keys(data[0]).filter((header) => header !== '每月更換') : [];
   return (
     <>
       {data && data !== null ? (
@@ -73,86 +71,86 @@ const Table: React.FC<TableProps> = (props) => {
             const monthlyOptions = position ? monthlyItems.get(position) : undefined;
             return (
               <React.Fragment key={rowIndex}>
-              <div
-                className={`table-cell table-checkbox${
-                  splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
-                }${rowIndex === 0 ? ' table-corner--top-left' : ''}${rowIndex === data.length ? ' table-corner--bottom-left' : ''}`}
-              >
-                {rowIndex !== 0 ? (
-                  <>
-                    <input
-                      id={`checkBox${rowIndex}`}
-                      name={`checkBox${rowIndex}`}
-                      type="checkbox"
-                      // @ts-ignore
-                      index={rowIndex}
-                      checked={status[rowIndex] ?? false}
-                      onChange={(e) => checkboxHandling(e, status, setStatus)}
-                    />
-                    <label htmlFor={`checkBox${rowIndex}`}></label>
-                  </>
-                ) : (
-                  '確認欄'
-                )}
-              </div>
-              {values.map((value, index) => {
-                return (
-                  <React.Fragment key={`${value}+${rowIndex}+${index}`}>
-                    <div
-                      className={`table-cell${
-                        values.length - 1 === index ? ' table-description' : ''
-                      }${rowIndex === 0 ? ' table-header' : ''}${
-                        splitterLine.includes(rowIndex - 1) ? ` table-splitter` : ``
-                      }${
-                        values.length - 1 === index && rowIndex === 0
-                          ? ' table-header-description table-corner--top-right'
-                          : ''
-                      }${rowIndex === data.length && index === values.length - 1 ? ' table-corner--bottom-right' : ''}`}
-                    >
-                      {index === 1 && row?.每月更換?.toUpperCase() === 'TRUE' && value ? (
-                        <Select
-                          aria-label={`${position} 每月更換`}
-                          className="commerce-select"
-                          classNamePrefix="commerce-react-select"
-                          options={monthlyOptions?.map((item) => ({ value: item, label: item })) ?? []}
-                          value={{
-                            value: selectedItems[position] ?? value,
-                            label: selectedItems[position] ?? value,
-                          }}
-                          onChange={(option) => {
-                            if (option) {
-                              onMonthlyItemChange(position, option.value);
-                            }
-                          }}
-                          isSearchable={false}
-                          menuPlacement="auto"
-                        />
-                      ) : (
-                        value || ' '
-                      )}
-                    </div>
-                    {index === 2 && (
+                <div
+                  className={`table-cell table-checkbox${
+                    splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
+                  }${rowIndex === 0 ? ' table-corner--top-left' : ''}${rowIndex === data.length ? ' table-corner--bottom-left' : ''}`}
+                >
+                  {rowIndex !== 0 ? (
+                    <>
+                      <input
+                        id={`checkBox${rowIndex}`}
+                        name={`checkBox${rowIndex}`}
+                        type="checkbox"
+                        // @ts-ignore
+                        index={rowIndex}
+                        checked={status[rowIndex] ?? false}
+                        onChange={(e) => checkboxHandling(e, status, setStatus)}
+                      />
+                      <label htmlFor={`checkBox${rowIndex}`}></label>
+                    </>
+                  ) : (
+                    '確認欄'
+                  )}
+                </div>
+                {values.map((value, index) => {
+                  return (
+                    <React.Fragment key={`${value}+${rowIndex}+${index}`}>
                       <div
                         className={`table-cell${
-                          splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
-                        }${rowIndex === 0 ? ' table-header' : ''}`}
+                          values.length - 1 === index ? ' table-description' : ''
+                        }${rowIndex === 0 ? ' table-header' : ''}${
+                          splitterLine.includes(rowIndex - 1) ? ` table-splitter` : ``
+                        }${
+                          values.length - 1 === index && rowIndex === 0
+                            ? ' table-header-description table-corner--top-right'
+                            : ''
+                        }${rowIndex === data.length && index === values.length - 1 ? ' table-corner--bottom-right' : ''}`}
                       >
-                        {rowIndex === 0 ? (
-                          '圖'
-                        ) : (
-                          <img
-                            alt={value}
-                            src={getImage(value)}
-                            onError={(e) => {
-                              e.currentTarget.src = getImage('default');
+                        {index === 1 && row?.每月更換?.toUpperCase() === 'TRUE' && value ? (
+                          <Select
+                            aria-label={`${position} 每月更換`}
+                            className="commerce-select"
+                            classNamePrefix="commerce-react-select"
+                            options={monthlyOptions?.map((item) => ({ value: item, label: item })) ?? []}
+                            value={{
+                              value: selectedItems[position] ?? value,
+                              label: selectedItems[position] ?? value,
                             }}
+                            onChange={(option) => {
+                              if (option) {
+                                onMonthlyItemChange(position, option.value);
+                              }
+                            }}
+                            isSearchable={false}
+                            menuPlacement="auto"
                           />
+                        ) : (
+                          value || ' '
                         )}
                       </div>
-                    )}
-                  </React.Fragment>
-                );
-              })}
+                      {index === 2 && (
+                        <div
+                          className={`table-cell${
+                            splitterLine.includes(rowIndex - 1) ? ' table-splitter' : ''
+                          }${rowIndex === 0 ? ' table-header' : ''}`}
+                        >
+                          {rowIndex === 0 ? (
+                            '圖'
+                          ) : (
+                            <img
+                              alt={value}
+                              src={getImage(value)}
+                              onError={(e) => {
+                                e.currentTarget.src = getImage('default');
+                              }}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
               </React.Fragment>
             );
           });
@@ -217,10 +215,7 @@ const Commerce: React.FC = () => {
   }, [selectedItems, isLoaded]);
 
   const positionGroups = useMemo(() => {
-    const groups = new Map<
-      string,
-      { fixed: CommerceRecord[]; monthly: Map<string, CommerceRecord[]> }
-    >();
+    const groups = new Map<string, { fixed: CommerceRecord[]; monthly: Map<string, CommerceRecord[]> }>();
     let position = '';
     let item = '';
 
@@ -258,7 +253,7 @@ const Commerce: React.FC = () => {
   const visibleData = [...positionGroups].flatMap(([position, group]) => {
     const items = [...group.monthly.keys()];
     const selectedItem = items.includes(selectedItems[position]) ? selectedItems[position] : items[0];
-    return [...group.fixed, ...(selectedItem ? group.monthly.get(selectedItem) ?? [] : [])];
+    return [...group.fixed, ...(selectedItem ? (group.monthly.get(selectedItem) ?? []) : [])];
   });
   const handleMonthlyItemChange = (position: string, item: string) => {
     setSelectedItems((previous) => ({ ...previous, [position]: item }));
@@ -288,7 +283,7 @@ const Commerce: React.FC = () => {
               position,
               selectedItems[position] && group.monthly.has(selectedItems[position])
                 ? selectedItems[position]
-                : [...group.monthly.keys()][0] ?? '',
+                : ([...group.monthly.keys()][0] ?? ''),
             ]),
           )}
           onMonthlyItemChange={handleMonthlyItemChange}
@@ -302,6 +297,17 @@ const Commerce: React.FC = () => {
         <br />
         <a href="https://forum.gamer.com.tw/C.php?bsn=7422&snA=241470" hrefLang="zh-tw" target="blank">
           https://forum.gamer.com.tw/C.php?bsn=7422&snA=241470
+        </a>
+        <br />
+        2026/8/12 貿易改版賽季更新池來源
+        <br />
+        <a
+          href="https://mabinogicnwiki.miraheze.org/wiki/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/2026%E5%B9%B48%E6%9C%8812%E6%97%A5/%E8%B4%B8%E6%98%93%E6%94%B9%E9%9D%A9#%E6%AF%8F%E6%9C%88%E7%AC%AC6%E9%98%B6%E6%AE%B5%E5%80%99%E9%80%89%E6%B1%A0"
+          hrefLang="zh-tw"
+          target="blank"
+        >
+          https://mabinogicnwiki.miraheze.org/wiki/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/2026%E5%B9%B48%E6%9C%8812%E6%97%A5/%E8%B4%B8%E6%98%93%E6%94%B9%E9%9D%A9#%E6%AF%8F%E6%9C%88%E7%AC%AC6%E9%98%B6%E6%AE%B5%E5%80%99%E9%80%8
+          nine
         </a>
       </div>
     </div>
